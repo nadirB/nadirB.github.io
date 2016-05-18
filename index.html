@@ -10,48 +10,184 @@ layout: default
     <script type="text/javascript" src="lib/jsfft/fft.js"></script>
     <script type="text/javascript" src="js/meyda.js"></script>
 
+
 <div class="story col2">
 
 <h2>One Mode Songs</h2> 
 
-<a href='https://www.youtube.com/watch?v=3XMaJanGuWI' target='_blank' style='12'>In my craft or sullen art/DylanThomas</a><br><br>
+   <p> <a href='https://www.youtube.com/watch?v=3XMaJanGuWI' target='_blank' style='12'> A  In my craft or sullen art/DylanThomas</a></p><br>
  
+<style type="text/css">
 
-
-    <style type="text/css">
-     
-      
-      
-div#mp3_player{ width:400px; height:150px; background:#FFFFFF;  }
+div#mp3_player{ width:300px; height:150px; background:#FFFFFF;  }
 div#mp3_player > div > audio{  width:300px; background:#FFFFFF; float:left;  }
-div#mp3_player > canvas{ height=128px; width=300px; float:left;}
+div#mp3_player > canvas{ width:300px; height:128px; background:#FFFFFF; float:left; }
 
-    </style>
-  
-  
+</style>
 
-		 
-		 
-    <script type="text/javascript">
-      // Polyfilla
-      navigator.getUserMedia = (navigator.getUserMedia ||
+<script> // Create a new instance of an audio object and adjust some of its properties
+
+// fork getUserMedia for multiple browser versions, for those
+// that need prefixes
+
+navigator.getUserMedia = (navigator.getUserMedia ||
                           navigator.webkitGetUserMedia ||
                           navigator.mozGetUserMedia ||
                           navigator.msGetUserMedia);
-      window.AudioContext = window.AudioContext||window.webkitAudioContext;
-      
-      
-      // Create a new instance of an audio object and adjust some of its properties
 
-var audio_01 = new Audio();
-audio_01.src = 'sons/In my craft or Sullen art D.mp3';
-audio_01.controls = true;
-audio_01.loop = true;
-audio_01.autoplay = false;
+// set up forked web audio context, for multiple browsers
+// window. is needed otherwise Safari explodes
+
+
+
+
+
+// Create a new instance of an audio object and adjust some of its properties
+
+var audio2 = new Audio();
+audio2.src = 'sons/In my craft or Sullen art D.mp3';
+audio2.controls = true;
+audio2.loop = false;
+audio2.autoplay = false;
 
 // Establish all variables that your Analyser will use
 
-var ac_01, m_01, c_01, ctx_01, source_01, context_01, main_01, stream_01;
+var canvas, ctx, source, context, analyser, stream;
+
+
+
+// Initialize the MP3 player after the page loads all of its HTML into the window
+
+window.addEventListener("load", initMp3Player, false);
+
+function initMp3Player(){
+
+	document.getElementById('audio_box').appendChild(audio2);
+	context = new AudioContext(); // AudioContext object instance
+	//context = new mozAudioContext(); // AudioContext object instance
+	analyser = context.createAnalyser(); // AnalyserNode method
+	canvas = document.getElementById('analyser_render');
+	canvasContext = canvas.getContext('2d');
+	analyser.minDecibels = -90;
+	analyser.maxDecibels = -10;
+	analyser.smoothingTimeConstant = 0.85;
+	
+
+// Re-route audio playback into the processing graph of the AudioContext
+
+	source = context.createMediaElementSource(audio2); 
+	source.connect(analyser);
+	analyser.connect(context.destination)
+    visualize(audio2);
+
+}
+
+
+function visualize() {
+    WIDTH = canvas.width;
+    HEIGHT = canvas.height;
+
+    analyser.fftSize = 2048;
+    var bufferLength = analyser.frequencyBinCount; // half the FFT value
+    var dataArray = new Uint8Array(bufferLength); // create an array to store the data
+
+    canvasContext.clearRect(0, 0, WIDTH, HEIGHT);
+
+    function draw() {
+
+      drawVisual = requestAnimationFrame(draw);
+
+      analyser.getByteTimeDomainData(dataArray); // get waveform data and put it into the array created above
+
+      canvasContext.fillStyle = '#FFFFFF'; // draw wave with canvas
+      canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+
+      canvasContext.lineWidth = 2;
+      canvasContext.strokeStyle = '#000';
+
+      canvasContext.beginPath();
+
+      var sliceWidth = WIDTH * 1.0 / bufferLength;
+      var x = 0;
+
+      for(var i = 0; i < bufferLength; i++) {
+
+        var v = dataArray[i] / 128.0;
+        var y = v * HEIGHT/2;
+
+        if(i === 0) {
+          canvasContext.moveTo(x, y);
+        } else {
+          canvasContext.lineTo(x, y);
+        }
+
+        x += sliceWidth;
+      }
+
+      canvasContext.lineTo(canvas.width, canvas.height/2);
+      canvasContext.stroke();
+    }
+
+    draw();  
+  }
+
+</script>
+
+
+
+
+
+<div id="mp3_player">
+	<div id="audio_box"></div>
+		<canvas id="analyser_render"></canvas>
+		 </div><br>
+	
+
+  
+ 
+
+
+
+
+
+   <a href='https://www.youtube.com/watch?v=ruh7uQ9hSQk' target='_blank' style='12'> And Death Shall Have No Dominion/Dylan Thomas</a><br><br>
+ 
+<style type="text/css">
+
+div#audio_player_01{ width:300px; height:150px; background:#FFFFFF;  }
+div#audio_player_01 > div > audio_01{  width:300px; background:#FFFFFF; float:left;  }
+div#audio_player_01 > canvas_01{ width:300px; height:128px; background:#FFFFFF; float:left; }
+
+</style>
+
+<script> // Create a new instance of an audio object and adjust some of its properties
+
+// fork getUserMedia for multiple browser versions, for those
+// that need prefixes
+
+navigator.getUserMedia = (navigator.getUserMedia ||
+                          navigator.webkitGetUserMedia ||
+                          navigator.mozGetUserMedia ||
+                          navigator.msGetUserMedia);
+
+// set up forked web audio context, for multiple browsers
+// window. is needed otherwise Safari explodes
+
+
+
+
+
+// Create a new instance of an audio object and adjust some of its properties
+
+var audio_file = new Audio();
+audio_file.src = 'sons/And_Death_Shall_Have_No_Dominion_DylanThomas_NadirBabouri.mp3';
+audio_file.controls = true;
+audio_file.loop = false;
+audio_file.autoplay = false;
+
+// Establish all variables that your Analyser will use
+
+var canvas_01, canvasContext_01, source_01, context_01, analyser_01;
 
 
 
@@ -61,99 +197,88 @@ window.addEventListener("load", initMp3Player_01, false);
 
 function initMp3Player_01(){
 
-	document.getElementById('audio_box_01').appendChild(audio_01);
-	ac_01 = new AudioContext(); // AudioContext object instance
-	m_01 = ac_01.createAnalyser(); // AnalyserNode method
-	c_01 = document.getElementById('main_01');
-	ctx_01 = c_01.getContext('2d');
-	
+	document.getElementById('audio_box_01').appendChild(audio_file);
+	context_01 = new AudioContext(); // AudioContext object instance
+	//context = new mozAudioContext(); // AudioContext object instance
+	analyser_01 = context_01.createAnalyser(); // AnalyserNode method
+	canvas_01 = document.getElementById('analyser_render_01');
+	canvasContext_01 = canvas_01.getContext('2d');
+	analyser_01.minDecibels = -90;
+	analyser_01.maxDecibels = -10;
+	analyser_01.smoothingTimeConstant = 0.85;
 	
 
 // Re-route audio playback into the processing graph of the AudioContext
 
-	source_01 = ac_01.createMediaElementSource(audio_01); 
-	source_01.connect(m_01);
-	m_01.connect(ac_01.destination)
-    stream_01(audio_01);
+	source_01 = context_01.createMediaElementSource(audio_file); 
+	source_01.connect(analyser_01);
+	analyser_01.connect(context_01.destination)
+    visualize_01(audio_file);
 
 }
- //ctx.font = "bold 16px Arial";
-      //ctx.fillStyle = "#000";
-      //ctx.lineWidth = 1;
-      //ctx.strokeStyle = '#000';
-      var spectrumLength = 512;
-      var spectracount = 50;
 
-      var previousAmplitudeSpectra = [];
-      var previousSpectralCentroids = [];
 
-      for(var i = 0; i < spectracount; i++){
-        previousAmplitudeSpectra[i] = [];
-        previousSpectralCentroids[i] = 0;
-        for(var j = 0; j < spectrumLength; j++){
-          previousAmplitudeSpectra[i][j] = 0;
+function visualize_01() {
+    WIDTH_01 = canvas_01.width;
+    HEIGHT_01 = canvas_01.height;
+
+    analyser_01.fftSize = 2048;
+    var bufferLength_01 = analyser_01.frequencyBinCount; // half the FFT value
+    var dataArray_01 = new Uint8Array(bufferLength_01); // create an array to store the data
+
+    canvasContext_01.clearRect(0, 0, WIDTH_01, HEIGHT_01);
+
+    function draw_01() {
+
+      drawVisual_01 = requestAnimationFrame(draw_01);
+
+      analyser_01.getByteTimeDomainData(dataArray_01); // get waveform data and put it into the array created above
+
+      canvasContext_01.fillStyle = '#FFFFFF'; // draw wave with canvas
+      canvasContext_01.fillRect(0, 0, WIDTH_01, HEIGHT_01);
+
+      canvasContext_01.lineWidth = 2;
+      canvasContext_01.strokeStyle = '#000';
+
+      canvasContext_01.beginPath();
+
+      var sliceWidth_01 = WIDTH_01 * 1.0 / bufferLength_01;
+      var x_01 = 0;
+
+      for(var i = 0; i < bufferLength_01; i++) {
+
+        var v_01 = dataArray_01[i] / 128.0;
+        var y_01 = v_01 * HEIGHT_01/2;
+
+        if(i === 0) {
+          canvasContext_01.moveTo(x_01, y_01);
+        } else {
+          canvasContext_01.lineTo(x_01, y_01);
         }
+
+        x_01 += sliceWidth_01;
       }
-      
-     //var source = ac.createMediaElementSource(audio2); 
-          function stream_01 () {
-           
-			var m_01 = new Meyda(ac_01,source_01,spectrumLength);
-            
-            
-                setTimeout(function(){
-              function draw(){
-                ctx_01.clearRect(0, 0, c_01.width, c_01.height);
-                requestAnimationFrame(draw);
-                var features = m_01.get(['spectralCentroid','buffer','complexSpectrum']);
-                var hannedBuffer = m_01.hanning(features.buffer);
-                for (var i = previousAmplitudeSpectra.length - 1; i > 0; i--) {
-                  previousAmplitudeSpectra[i] = previousAmplitudeSpectra[i-1];
-                  previousSpectralCentroids[i] = previousSpectralCentroids[i-1];
-                };
-                previousAmplitudeSpectra[0] = features.amplitudeSpectrum;
-                previousSpectralCentroids[0] = features.spectralCentroid;
-                ctx_01.beginPath();
-                ctx_01.moveTo(0,ctx_01.canvas.height/2);
-                ctx_01.strokeStyle = "#000";
-                for(var bin = 0; bin < features.complexSpectrum.real.length; bin++){
-                  // Buffer Plot
-                  ctx_01.lineTo(bin/spectrumLength*ctx_01.canvas.width,ctx_01.canvas.height/2+100*hannedBuffer[bin],1,1);
-                }
-                ctx_01.stroke();
-                
-                for(var i = 0; i < spectracount; i++){
-                  ctx_01.beginPath();
-                  // Amplitude Spectrum Plot
-                  ctx_01.strokeStyle = "rgba(70,10,10,"+(1-i/spectracount)+")";
-                  for(var bin = 0; bin < features.amplitudeSpectrum.length; bin++){
-                    ctx_01.lineTo(i*6+Math.round(bin/features.amplitudeSpectrum.length*(c_01.width-i*12)),(ctx_01.canvas.height/(spectracount+i*2))*(spectracount-i)-50*previousAmplitudeSpectra[i][bin],1,1);
-                  }
-                  ctx_01.stroke();
-                }
-                // ctx.moveTo(0,features.)
-              }
-              draw();
-            },1000);
-          }
-      
-      
-    </script>
-    
-<div id="mp3_player_01">
+
+      canvasContext_01.lineTo(WIDTH_01, HEIGHT_01/2);
+      canvasContext_01.stroke();
+    }
+
+    draw_01();  
+  }
+
+</script>
+
+
+
+
+
+<div id="audio_player_01">
 	<div id="audio_box_01"></div>
-		<canvas id="main_01"></canvas>
-		 </div>
+		<canvas id="analyser_render_01"></canvas>
+		 </div><br><br>
+	
 
-
-   <a href='https://www.youtube.com/watch?v=ruh7uQ9hSQk' target='_blank' style='12'> And Death Shall Have No Dominion/Dylan Thomas</a><br><br>
+  <p>Juliette Donadieu : Clarinette  </p>
  
-<audio controls> 
-    <source src="sons/And_Death_Shall_Have_No_Dominion_DylanThomas_NadirBabouri.mp3"                        type="audio/mpeg" preload="true">
-   </audio><br>
-	
 
-  <p>Juliette Donadieu : Clarinette / Nadir Babouri : Lecture, Guitare & Percussion </p>
-
-	
 </div>
